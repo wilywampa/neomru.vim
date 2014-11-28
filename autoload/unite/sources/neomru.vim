@@ -149,10 +149,17 @@ let s:dir_mru_source.converters = [ s:dir_mru_source.source__converter ]
 
 " Misc "{{{
 function! s:on_post_filter(args, context) "{{{
-  for candidate in a:context.candidates
-    let candidate.action__directory =
+  if has('mac') || stridx(get(a:context, 'source_name'), 'dir') != -1
+    for candidate in a:context.candidates
+      let candidate.action__directory =
           \ unite#util#path2directory(candidate.action__path)
-  endfor
+    endfor
+  else
+    for candidate in a:context.candidates
+      let candidate.action__directory =
+          \ strpart(candidate.action__path, 0, strridx(candidate.action__path, '/'))
+    endfor
+  endif
 endfunction"}}}
 "}}}
 "
